@@ -16,5 +16,8 @@
     "psr-4": {
       "GhostlyMC\\Database\\": "src/"
     }
+  },
+  "require": {
+    "ext-mysqli": "*"
   }
 }
