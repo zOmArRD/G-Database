@@ -31,7 +31,7 @@ final class Exception
         throw new mysqlCredentialsException($error);
     }
 
-    public function mysqlConnectionException(string $error): mysqlConnectionException
+    public static function mysqlConnectionException(string $error): mysqlConnectionException
     {
         throw new mysqlConnectionException($error);
     }

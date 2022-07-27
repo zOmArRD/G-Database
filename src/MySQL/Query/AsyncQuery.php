@@ -26,6 +26,7 @@ namespace GhostlyMC\Database\MySQL\Query;
 
 use GhostlyMC\Database\Database;
 use GhostlyMC\Database\Exception\Exception;
+use mysqli;
 use pocketmine\scheduler\AsyncTask;
 
 abstract class AsyncQuery extends AsyncTask
@@ -40,7 +41,7 @@ abstract class AsyncQuery extends AsyncTask
 
     public function onRun(): void
     {
-        $query = new \mysqli(
+        $query = new mysqli(
             Database::getMySQL()->getHost(),
             Database::getMySQL()->getUser(),
             Database::getMySQL()->getPassword(),
@@ -48,14 +49,14 @@ abstract class AsyncQuery extends AsyncTask
         );
 
         if ($query->connect_error) {
-            Exception::mysqlCredentialsException("MySQL connection failed: " . $query->connect_error);
+            Exception::mysqlConnectionException("MySQL connection failed: " . $query->connect_error);
         }
 
         $this->query($query);
         $query->close();
     }
 
-    abstract public function query(\mysqli $mysqli): void;
+    abstract public function query(mysqli $mysqli): void;
 
     public function onCompletion(): void {
         //TODO: Execute CallBack
