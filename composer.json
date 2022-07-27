@@ -1,0 +1,20 @@
+{
+  "name": "ghostlymc/g-database",
+  "description": "Database API for GhostlyMC Network",
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "zOmArRD",
+      "email": "omar@ghostlymc.live"
+    }
+  ],
+  "require-dev": {
+    "pocketmine/pocketmine-mp": ">=4.6.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "GhostlyMC\\Database\\": "src/"
+    }
+  }
+}
