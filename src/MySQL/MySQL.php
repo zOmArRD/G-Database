@@ -29,29 +29,17 @@ use pocketmine\Server;
 
 class MySQL
 {
-    private ?string $host, $port, $user, $password;
+
+    public function __construct(
+        private string $host,
+        private string $user,
+        private string $password,
+        private string $database,
+        private int    $port = 3306,
+    ) {}
 
     /**
-     * You must first execute this
-     * function to execute the queries.
-     *
-     * @param string $host     MySQL Host
-     * @param string $port     MySQL Port
-     * @param string $user     MySQL User
-     * @param string $password MySQL Password
-     *
-     * @return void
-     */
-    public function saveCredentials(string $host, string $port, string $user, string $password): void
-    {
-        $this->host = $host;
-        $this->port = $port;
-        $this->user = $user;
-        $this->password = $password;
-    }
-
-    /**
-     * @return string Host
+     * @return string
      */
     public function getHost(): string
     {
@@ -59,15 +47,7 @@ class MySQL
     }
 
     /**
-     * @return string Port
-     */
-    public function getPort(): string
-    {
-        return $this->port;
-    }
-
-    /**
-     * @return string User
+     * @return string
      */
     public function getUser(): string
     {
@@ -75,7 +55,7 @@ class MySQL
     }
 
     /**
-     * @return string Password
+     * @return string
      */
     public function getPassword(): string
     {
@@ -83,13 +63,19 @@ class MySQL
     }
 
     /**
-     * This verifies that the credentials are set.
-     *
-     * @return bool
+     * @return string
      */
-    public function isCredentialsSet(): bool
+    public function getDatabase(): string
     {
-        return $this->host !== null && $this->port !== null && $this->user !== null && $this->password !== null;
+        return $this->database;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPort(): int
+    {
+        return $this->port;
     }
 
     private static array $callbacks = [];
