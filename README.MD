@@ -59,7 +59,7 @@ public function playerLoginEvent(PlayerLoginEvent $event): void
     {
         $player = $event->getPlayer();
         
-        Database::getMySQL()->runAsync(new SelectAsyncQuery(
+        Database::getMySQL()->runQueryAsync(new SelectAsyncQuery(
             'ghostly_playerdata',
             'name',
             $player->getName(),
@@ -77,6 +77,27 @@ public function playerLoginEvent(PlayerLoginEvent $event): void
             'DatabaseName?'
         ));
     }
+```
+
+#### 3 - Running the NotAsync Query.
+If yoou want to run a query that is not asynchronous, you can use the runQuery function.
+
+Example:
+```php
+use GhostlyMC\Database\Database;
+
+public function onLoad(): void
+{
+    Database::getMySQL()->runQuery('SELECT * FROM ghostly_servers',
+        function (array $data): void {
+            foreach ($data as $row) {
+                $server = new Server($row['name'], $row['ip'], (int)$row['port']);
+                $this->servers[] = $server;
+                Ghostly::$logger->info(sprintf("%sThe server (%s) has been loaded from the database!", PREFIX, $server->getName()));
+            }
+        });
+    );
+}
 ```
 
 ### WARNING
