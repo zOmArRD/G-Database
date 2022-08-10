@@ -25,9 +25,8 @@ declare(strict_types=1);
 namespace GhostlyMC\Database\MySQL;
 
 use Closure;
-use GhostlyMC\Database\Exception\Exception;
 use GhostlyMC\Database\MySQL\Query\AsyncQuery;
-use mysqli;
+use GhostlyMC\Database\MySQL\Query\SelectQuery;
 use pocketmine\Server;
 
 class MySQL
@@ -102,34 +101,25 @@ class MySQL
         Server::getInstance()->getAsyncPool()->submitTask($query);
     }
 
-    public function runQuery(
-        string   $query,
+    /**
+     * @see https://github.com/GhostlyMC/G-Database/tree/master
+     *
+     * @param string       $table
+     * @param string|null  $key
+     * @param string|null  $value
+     * @param Closure|null $closure
+     * @param string|null  $dbName
+     *
+     * @return void
+     */
+    public function runSelectQuery(
+        string   $table,
+        ?string  $key = null,
+        ?string  $value = null,
         ?Closure $closure = null,
-    ): void {
-        $mysqli = new mysqli($this->host, $this->user, $this->password, $this->database, $this->port);
-
-        if ($mysqli->connect_error) {
-            Exception::mysqlConnectionException("MySQL connection failed: {$mysqli->connect_error}");
-        }
-
-        $result = $mysqli->query($query);
-        $mysqli->close();
-
-        $rows = [];
-
-        if (is_bool($result)) {
-            if (is_callable($closure)) {
-                $closure();
-            }
-            return;
-        }
-
-        while ($row = $result->fetch_assoc()) {
-            $rows[] = $row;
-        }
-
-        if (is_callable($closure)) {
-            $closure($rows);
-        }
+        ?string  $dbName = null
+    ): void
+    {
+        new SelectQuery($table, $key, $value, $closure, $dbName);
     }
 }

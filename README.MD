@@ -14,6 +14,7 @@ Very helpful for make queries asynchronously or synchronously.
 ## Get Started
 
 ### Install the API
+
 Open your CLI and execute this command:
 
 ```bash
@@ -21,6 +22,7 @@ composer require ghostlymc/g-database
 ```
 
 ### Using the API
+
 #### 1 - Register the credentials for the connection.
 
 ```php
@@ -42,13 +44,14 @@ public function onLoad(): void
 
 This is an example of using the SelectAsyncQuery class.
 
-You can actually modify this API to do queries of any kind. 
+You can actually modify this API to do queries of any kind.
 
-Even make your own classes to do queries. 
+Even make your own classes to do queries.
 
 This is just an example of how to use the SelectAsyncQuery class.
 
-Link to SelectAsyncQuery class: [SelectAsyncQuery](https://github.com/GhostlyMC/G-Database/blob/master/src/MySQL/Query/SelectAsyncQuery.php)
+Link to SelectAsyncQuery
+class: [SelectAsyncQuery](https://github.com/GhostlyMC/G-Database/blob/master/src/MySQL/Query/SelectAsyncQuery.php)
 
 ```php
 use pocketmine\event\player\PlayerLoginEvent;
@@ -80,23 +83,23 @@ public function playerLoginEvent(PlayerLoginEvent $event): void
 ```
 
 #### 3 - Running the NotAsync Query.
+
 If yoou want to run a query that is not asynchronous, you can use the runQuery function.
 
 Example:
+
 ```php
 use GhostlyMC\Database\Database;
 
 public function onLoad(): void
 {
-    Database::getMySQL()->runQuery('SELECT * FROM ghostly_servers',
-        function (array $data): void {
-            foreach ($data as $row) {
-                $server = new Server($row['name'], $row['ip'], (int)$row['port']);
-                $this->servers[] = $server;
-                Ghostly::$logger->info(sprintf("%sThe server (%s) has been loaded from the database!", PREFIX, $server->getName()));
-            }
-        });
-    );
+    Database::getMySQL()->runSelectQuery('ghostlymc_servers', null, null,
+    function(array $data) {
+        foreach ($data as $row) {
+            $this->server[] = new Server($row['name'], $row['ip'], (int)$row['port']);
+            Ghostly::$logger->info(sprintf("%sThe server (%s) has been loaded from the database!", PREFIX, $server->getName()));
+        }
+    }, 'DatabaseName?');
 }
 ```
 
@@ -110,4 +113,4 @@ This project is under development and is not ready to be used.
 
 Any errors, problems, etc. please report me on GitHub.
 
-Exclusivo uso para [GhostlyMC](https://github.com/GhostlyMC).
+Exclusive for [GhostlyMC](https://github.com/GhostlyMC).
