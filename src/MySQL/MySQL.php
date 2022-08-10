@@ -29,9 +29,6 @@ use pocketmine\Server;
 
 class MySQL
 {
-
-    private static array $callbacks = [];
-
     public function __construct(
         private string $host,
         private string $user,
