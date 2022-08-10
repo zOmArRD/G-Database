@@ -34,11 +34,11 @@ class Database
 
     /**
      * First set the credentials.
-     * @param string $host
-     * @param string $user
-     * @param string $pass
-     * @param string $db
-     * @param int    $port
+     * @param string $host HOST
+     * @param string $user USER
+     * @param string $pass PASSWORD
+     * @param string $db DATABASE NAME
+     * @param int    $port PORT
      *
      * @return void
      */
@@ -58,7 +58,7 @@ class Database
     public static function getMySQL(): MySQL
     {
         if (self::$mysql === null) {
-            Exception::mysqlCredentialsException("You must register the credentials of the Database");
+            Exception::mysqlCredentialsException('You must register the credentials of the Database');
         }
 
         return self::$mysql;

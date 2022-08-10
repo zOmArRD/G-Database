@@ -30,6 +30,8 @@ use pocketmine\Server;
 class MySQL
 {
 
+    private static array $callbacks = [];
+
     public function __construct(
         private string $host,
         private string $user,
@@ -78,30 +80,13 @@ class MySQL
         return $this->port;
     }
 
-    private static array $callbacks = [];
-
     /**
-     * @param AsyncQuery    $query
-     * @param callable|null $callable
-     * @param string|null   $database
-     *
-     * @return void
-     */
-    public function runAsync(AsyncQuery $query, ?callable $callable = null, ?string $database = null): void
-    {
-
-        Server::getInstance()->getAsyncPool()->submitTask($query);
-    }
-
-    /**
-     * Run the callable when the query is finished.
-     *
      * @param AsyncQuery $query
      *
      * @return void
      */
-    public function executeCallback(AsyncQuery $query): void
+    public function runAsync(AsyncQuery $query): void
     {
-        //TODO
+        Server::getInstance()->getAsyncPool()->submitTask($query);
     }
 }

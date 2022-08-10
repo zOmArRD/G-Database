@@ -24,13 +24,47 @@ declare(strict_types=1);
 
 namespace GhostlyMC\Database\MySQL\Query;
 
+use Closure;
 use mysqli;
+use mysqli_result;
 
-class SelectAsync extends AsyncQuery
+class SelectAsyncQuery extends AsyncQuery
 {
+    public mixed $rows;
+
+    public function __construct(
+        private string $table,
+        private ?string $key = null,
+        private ?string $value = null,
+        ?Closure $closure = null,
+        ?string $dbName = null
+    ) { parent::__construct($closure, $dbName); }
 
     public function query(mysqli $mysqli): void
     {
-        // TODO: Implement query() method.
+        if (!isset($this->key)) {
+            $result = $mysqli->query("SELECT * FROM {$this->table}");
+        } else {
+            $result = $mysqli->query("SELECT * FROM {$this->table} WHERE {$this->key} = {$this->value}");
+        }
+
+        $rows = [];
+
+        if ($result instanceof mysqli_result) {
+            while ($row = $result->fetch_assoc()) {
+                $rows[] = $row;
+            }
+        }
+
+        $this->rows = serialize($rows);
+    }
+
+    public function onCompletion(): void
+    {
+        if ($this->rows !== null) {
+            $this->closure->__invoke(unserialize($this->rows));
+        } else {
+            $this->closure->__invoke(null);
+        }
     }
 }

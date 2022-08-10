@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace GhostlyMC\Database\MySQL\Query;
 
+use Closure;
 use GhostlyMC\Database\Database;
 use GhostlyMC\Database\Exception\Exception;
 use mysqli;
@@ -31,12 +32,25 @@ use pocketmine\scheduler\AsyncTask;
 
 abstract class AsyncQuery extends AsyncTask
 {
+
+    public ?Closure $closure;
+    public string $dbName;
+
+
     public function __construct(
-        private string $database
+        ?Closure $closure = null,
+        ?string $dbName = null
     ) {
-        if (!Database::getMySQL()->isCredentialsSet()) {
-            Exception::mysqlCredentialsException("No credentials set for MySQL!");
-        }
+        $this->closure = $closure;
+        $this->dbName = $dbName === null ? Database::getMySQL()->getDatabase() : $dbName;
+    }
+
+    /**
+     * @return Closure|null
+     */
+    public function getClosure(): ?Closure
+    {
+        return $this->closure;
     }
 
     public function onRun(): void
@@ -45,20 +59,24 @@ abstract class AsyncQuery extends AsyncTask
             Database::getMySQL()->getHost(),
             Database::getMySQL()->getUser(),
             Database::getMySQL()->getPassword(),
-            $this->database
+            $this->dbName,
+            Database::getMySQL()->getPort()
         );
 
         if ($query->connect_error) {
-            Exception::mysqlConnectionException("MySQL connection failed: " . $query->connect_error);
+            Exception::mysqlConnectionException("MySQL connection failed: {$query->connect_error}");
         }
 
         $this->query($query);
         $query->close();
     }
 
+    /**
+     * Make the query to the database.
+     * @param mysqli $mysqli
+     *
+     * @return void
+     */
     abstract public function query(mysqli $mysqli): void;
 
-    public function onCompletion(): void {
-        //TODO: Execute CallBack
-    }
 }

@@ -38,10 +38,55 @@ public function onLoad(): void
 }
 ```
 
-#### 2 - Make a query.
+#### 2 - Using SelectAsyncQuery.
+
+This is an example of using the SelectAsyncQuery class.
+
+You can actually modify this API to do queries of any kind. 
+
+Even make your own classes to do queries. 
+
+This is just an example of how to use the SelectAsyncQuery class.
+
+Link to SelectAsyncQuery class: [SelectAsyncQuery](https://github.com/GhostlyMC/G-Database/blob/master/src/MySQL/Query/SelectAsyncQuery.php)
 
 ```php
+use pocketmine\event\player\PlayerLoginEvent;
 use GhostlyMC\Database\Database;
+use GhostlyMC\Database\MySQL\Query\SelectAsyncQuery;
 
-
+public function playerLoginEvent(PlayerLoginEvent $event): void
+    {
+        $player = $event->getPlayer();
+        
+        Database::getMySQL()->runAsync(new SelectAsyncQuery(
+            'ghostly_playerdata',
+            'name',
+            $player->getName(),
+            function (array $data) use ($player) {
+                if (count($data) === 0) {
+                    $player->transfer('ghostlymc.live', 19132, 'Player is not registered!');
+                } else {
+                    $player->sendMessage('You are registered!');
+                }
+                
+                $finalResult = $data[0];
+                $player->setLanguage($data->language);
+                $player->setScoreboard((bool)$data->scoreboard);
+            },
+            'DatabaseName?'
+        ));
+    }
 ```
+
+### WARNING
+
+Remember that the SelectAsyncQuery class is a test class and is not guaranteed to work correctly.
+
+This is to make it easier for you to query your database and execute callback functions.
+
+This project is under development and is not ready to be used.
+
+Any errors, problems, etc. please report me on GitHub.
+
+Exclusivo uso para [GhostlyMC](https://github.com/GhostlyMC).
