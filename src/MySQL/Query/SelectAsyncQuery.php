@@ -33,37 +33,38 @@ class SelectAsyncQuery extends AsyncQuery
     public mixed $rows;
 
     public function __construct(
-        private string $table,
+        private string  $table,
         private ?string $key = null,
         private ?string $value = null,
-        ?Closure $closure = null,
-        ?string $dbName = null
-    ) { parent::__construct($closure, $dbName); }
+        ?Closure        $closure = null,
+        ?string         $dbName = null
+    )
+    {
+        parent::__construct($closure, $dbName);
+    }
 
     public function query(mysqli $mysqli): void
     {
-        if (!isset($this->key)) {
+        if (!isset($this->key)):
             $result = $mysqli->query("SELECT * FROM {$this->table}");
-        } else {
+        else:
             $result = $mysqli->query("SELECT * FROM {$this->table} WHERE {$this->key} = {$this->value}");
-        }
+        endif;
 
-        $rows = [];
+        if ($result instanceof mysqli_result):
+            $rows = [];
 
-        if ($result instanceof mysqli_result) {
             while ($row = $result->fetch_assoc()) {
                 $rows[] = $row;
             }
-        }
 
-        $this->rows = serialize($rows);
+            $this->rows = serialize($rows);
+        endif;
     }
 
     public function onCompletion(): void
     {
-        if ($this->rows !== null) {
-            $this->closure->__invoke(unserialize($this->rows));
-        } else {
+        if ($this->rows !== null) $this->closure->__invoke(unserialize($this->rows)); else {
             $this->closure->__invoke(null);
         }
     }

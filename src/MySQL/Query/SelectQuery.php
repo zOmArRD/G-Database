@@ -54,30 +54,22 @@ class SelectQuery
 
     public function query(mysqli $mysqli): void
     {
-        if (!isset($this->key)) {
+        if (!isset($this->key)):
             $result = $mysqli->query("SELECT * FROM {$this->table}");
-        } else {
+        else:
             $result = $mysqli->query("SELECT * FROM {$this->table} WHERE {$this->key} = {$this->value}");
-        }
+        endif;
 
-        $rows = [];
+        if (!$result instanceof mysqli_result):
+            $this->closure->__invoke();
+        else:
+            $rows = [];
 
-        if ($result instanceof mysqli_result) {
             while ($row = $result->fetch_assoc()) {
                 $rows[] = $row;
             }
-        }
 
-        if (is_bool($result)) {
-            $this->closure->__invoke();
-            return;
-        }
-
-        while ($row = $result->fetch_assoc()) {
-            $rows[] = $row;
-        }
-
-        $this->closure->__invoke($rows);
+            $this->closure->__invoke($rows);
+        endif;
     }
-
 }

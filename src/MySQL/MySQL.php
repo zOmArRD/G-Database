@@ -118,8 +118,7 @@ class MySQL
         ?string  $value = null,
         ?Closure $closure = null,
         ?string  $dbName = null
-    ): void
-    {
+    ): void {
         new SelectQuery($table, $key, $value, $closure, $dbName);
     }
 }
