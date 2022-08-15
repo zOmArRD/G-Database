@@ -24,15 +24,14 @@ declare(strict_types=1);
 
 namespace GhostlyMC\Database\Exception;
 
-final class Exception
-{
-    public static function mysqlCredentialsException(string $error): mysqlCredentialsException
-    {
-        throw new mysqlCredentialsException($error);
+final class Exception {
+
+    public static function mysqlCredentialsException(string $error): mysqlCredentialsException {
+        return new mysqlCredentialsException($error);
     }
 
-    public static function mysqlConnectionException(string $error): mysqlConnectionException
-    {
-        throw new mysqlConnectionException($error);
+    public static function mysqlConnectionException(string $error): mysqlConnectionException {
+        return new mysqlConnectionException($error);
     }
+
 }

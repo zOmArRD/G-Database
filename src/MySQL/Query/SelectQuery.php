@@ -24,13 +24,12 @@ declare(strict_types=1);
 
 namespace GhostlyMC\Database\MySQL\Query;
 
-use Closure;
-use GhostlyMC\Database\Database;
 use mysqli;
+use Closure;
 use mysqli_result;
+use GhostlyMC\Database\Database;
 
-class SelectQuery
-{
+class SelectQuery {
 
     public function __construct(
         private string   $table,
@@ -39,37 +38,37 @@ class SelectQuery
         private ?Closure $closure = null,
         private ?string  $dbName = null
     ) {
-        if ($dbName === null) {
+        if ($dbName === null)
             $this->dbName = Database::getMySQL()->getDatabase();
-        }
 
-        $this->query(new mysqli(
-            Database::getMySQL()->getHost(),
-            Database::getMySQL()->getUser(),
-            Database::getMySQL()->getPassword(),
-            $this->dbName,
-            Database::getMySQL()->getPort()
-        ));
+        $this->query(
+            new mysqli(
+                Database::getMySQL()->getHost(),
+                Database::getMySQL()->getUser(),
+                Database::getMySQL()->getPassword(),
+                $this->dbName,
+                Database::getMySQL()->getPort()
+            )
+        );
     }
 
-    public function query(mysqli $mysqli): void
-    {
-        if (!isset($this->key)):
-            $result = $mysqli->query("SELECT * FROM {$this->table}");
-        else:
+    /**
+     * @todo Check Unnecessary curly braces.
+     */
+    public function query(mysqli $mysqli): void {
+        if (!isset($this->key)) $result = $mysqli->query("SELECT * FROM {$this->table}"); else {
             $result = $mysqli->query("SELECT * FROM {$this->table} WHERE {$this->key} = {$this->value}");
-        endif;
+        }
 
         if (!$result instanceof mysqli_result):
             $this->closure->__invoke();
         else:
             $rows = [];
 
-            while ($row = $result->fetch_assoc()) {
-                $rows[] = $row;
-            }
+            while ($row = $result->fetch_assoc()) $rows[] = $row;
 
             $this->closure->__invoke($rows);
         endif;
     }
+
 }

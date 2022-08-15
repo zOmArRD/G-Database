@@ -24,21 +24,21 @@ declare(strict_types=1);
 
 namespace GhostlyMC\Database;
 
-use GhostlyMC\Database\Exception\Exception;
 use GhostlyMC\Database\MySQL\MySQL;
+use GhostlyMC\Database\Exception\Exception;
 
-class Database
-{
+class Database {
 
     public static MySQL $mysql;
 
     /**
      * First set the credentials.
+     *
      * @param string $host HOST
      * @param string $user USER
      * @param string $pass PASSWORD
      * @param string $db DATABASE NAME
-     * @param int    $port PORT
+     * @param int $port PORT
      *
      * @return void
      */
@@ -47,7 +47,7 @@ class Database
         string $user,
         string $pass,
         string $db,
-        int $port = 3306
+        int    $port = 3306
     ): void {
         self::$mysql = new MySQL($host, $user, $pass, $db, $port);
     }
@@ -55,12 +55,11 @@ class Database
     /**
      * @return MySQL MySQL Instance
      */
-    public static function getMySQL(): MySQL
-    {
-        if (self::$mysql === null) {
-            Exception::mysqlCredentialsException('You must register the credentials of the Database');
-        }
+    public static function getMySQL(): MySQL {
+        if (self::$mysql === null)
+            throw Exception::mysqlCredentialsException('You must register the credentials of the Database');
 
         return self::$mysql;
     }
+
 }

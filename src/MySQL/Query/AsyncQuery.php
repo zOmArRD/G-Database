@@ -24,22 +24,20 @@ declare(strict_types=1);
 
 namespace GhostlyMC\Database\MySQL\Query;
 
+use mysqli;
 use Closure;
 use GhostlyMC\Database\Database;
-use GhostlyMC\Database\Exception\Exception;
-use mysqli;
 use pocketmine\scheduler\AsyncTask;
+use GhostlyMC\Database\Exception\Exception;
 
-abstract class AsyncQuery extends AsyncTask
-{
+abstract class AsyncQuery extends AsyncTask {
 
     public ?Closure $closure;
     public string $dbName;
 
-
     public function __construct(
         ?Closure $closure = null,
-        ?string $dbName = null
+        ?string  $dbName = null
     ) {
         $this->closure = $closure;
         $this->dbName = $dbName === null ? Database::getMySQL()->getDatabase() : $dbName;
@@ -48,13 +46,11 @@ abstract class AsyncQuery extends AsyncTask
     /**
      * @return Closure|null
      */
-    public function getClosure(): ?Closure
-    {
+    public function getClosure(): ?Closure {
         return $this->closure;
     }
 
-    public function onRun(): void
-    {
+    public function onRun(): void {
         $query = new mysqli(
             Database::getMySQL()->getHost(),
             Database::getMySQL()->getUser(),
@@ -63,9 +59,8 @@ abstract class AsyncQuery extends AsyncTask
             Database::getMySQL()->getPort()
         );
 
-        if ($query->connect_error) {
-            Exception::mysqlConnectionException("MySQL connection failed: {$query->connect_error}");
-        }
+        if ($query->connect_error)
+            throw Exception::mysqlConnectionException("MySQL connection failed: $query->connect_error");
 
         $this->query($query);
         $query->close();
@@ -73,6 +68,7 @@ abstract class AsyncQuery extends AsyncTask
 
     /**
      * Make the query to the database.
+     *
      * @param mysqli $mysqli
      *
      * @return void

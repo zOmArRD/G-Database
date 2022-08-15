@@ -26,4 +26,4 @@ namespace GhostlyMC\Database\Exception;
 
 use RuntimeException;
 
-final class mysqlConnectionException extends RuntimeException {}
+final class mysqlConnectionException extends RuntimeException { }

@@ -26,5 +26,4 @@ namespace GhostlyMC\Database\Exception;
 
 use InvalidArgumentException;
 
-final class mysqlCredentialsException extends InvalidArgumentException {}
-
+final class mysqlCredentialsException extends InvalidArgumentException { }
