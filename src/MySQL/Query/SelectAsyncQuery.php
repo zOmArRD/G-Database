@@ -29,7 +29,6 @@ use Closure;
 use mysqli_result;
 
 class SelectAsyncQuery extends AsyncQuery {
-
     public mixed $rows;
 
     public function __construct(
@@ -63,5 +62,4 @@ class SelectAsyncQuery extends AsyncQuery {
         if ($this->rows !== null) $this->closure->__invoke(unserialize($this->rows));
         else $this->closure->__invoke();
     }
-
 }

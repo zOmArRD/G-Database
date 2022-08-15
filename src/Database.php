@@ -28,7 +28,6 @@ use GhostlyMC\Database\MySQL\MySQL;
 use GhostlyMC\Database\Exception\Exception;
 
 class Database {
-
     public static MySQL $mysql;
 
     /**
@@ -61,5 +60,4 @@ class Database {
 
         return self::$mysql;
     }
-
 }

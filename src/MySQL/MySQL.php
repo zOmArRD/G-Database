@@ -30,7 +30,6 @@ use GhostlyMC\Database\MySQL\Query\AsyncQuery;
 use GhostlyMC\Database\MySQL\Query\SelectQuery;
 
 class MySQL {
-
     public function __construct(
         private string $host,
         private string $user,
@@ -114,5 +113,4 @@ class MySQL {
     ): void {
         new SelectQuery($table, $key, $value, $closure, $dbName);
     }
-
 }

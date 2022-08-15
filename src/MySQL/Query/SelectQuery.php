@@ -30,7 +30,6 @@ use mysqli_result;
 use GhostlyMC\Database\Database;
 
 class SelectQuery {
-
     public function __construct(
         private string   $table,
         private ?string  $key = null,
@@ -70,5 +69,4 @@ class SelectQuery {
             $this->closure->__invoke($rows);
         endif;
     }
-
 }

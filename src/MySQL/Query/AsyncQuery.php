@@ -31,7 +31,6 @@ use pocketmine\scheduler\AsyncTask;
 use GhostlyMC\Database\Exception\Exception;
 
 abstract class AsyncQuery extends AsyncTask {
-
     public ?Closure $closure;
     public string $dbName;
 
@@ -74,5 +73,4 @@ abstract class AsyncQuery extends AsyncTask {
      * @return void
      */
     abstract public function query(mysqli $mysqli): void;
-
 }
