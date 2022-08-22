@@ -26,17 +26,10 @@ composer require ghostlymc/g-database
 #### 1 - Register the credentials for the connection.
 
 ```php
-use GhostlyMC\Database\Database;
+use GhostlyMC\Database\GDatabase;
 
-public function onLoad(): void
-{
-    Database::setupMySQL(
-        "192.168.1.1", # HOST // REQUIRED
-        "root", # USER // REQUIRED
-        "zOmArRD", # PASS // REQUIRED
-        "servers", # DB NAME // REQUIRED
-        3306 # PORT // Optional
-    );
+public function onLoad(): void {
+    $this->mysql = GDatabase::setup_mysql_credentials($host, $user, $password, $database);
 }
 ```
 
@@ -55,51 +48,54 @@ class: [SelectAsyncQuery](https://github.com/GhostlyMC/G-Database/blob/master/sr
 
 ```php
 use pocketmine\event\player\PlayerLoginEvent;
-use GhostlyMC\Database\Database;
+use GhostlyMC\Database\GDatabase;
 use GhostlyMC\Database\MySQL\Query\SelectAsyncQuery;
 
-public function playerLoginEvent(PlayerLoginEvent $event): void
-    {
-        $player = $event->getPlayer();
-        
-        Database::getMySQL()->runQueryAsync(new SelectAsyncQuery(
-            'ghostly_playerdata',
-            'name',
-            $player->getName(),
-            function (array $data) use ($player) {
-                if (count($data) === 0) {
-                    $player->transfer('ghostlymc.live', 19132, 'Player is not registered!');
-                } else {
-                    $player->sendMessage('You are registered!');
-                }
+public function playerLoginEvent(PlayerLoginEvent $event): void {
+    $player = $event->getPlayer();
+    
+    $MySQL = GDatabase::get_mysql_instance();
+    
+    $MySQL->runQueryAsync(new SelectAsyncQuery(
+        table: 'ghostly_playerData',
+        key: 'playerName',
+        value: $player->getName(),
+        closure: function(array $data) use ($player) {
+                    if (count($data) === 0) {
+                        $player->transfer('ghostlymc.live', 19132, 'Player is not registered!');
+                    } else {
+                        $player->sendMessage('You are registered!');
+                    }
                 
                 $finalResult = $data[0];
                 $player->setLanguage($data->language);
                 $player->setScoreboard((bool)$data->scoreboard);
-            },
-            'DatabaseName?'
-        ));
-    }
+        },dbName: 'optional' # It is not necessary if you do not want to do it in another Database.
+    ));
+}
 ```
 
 #### 3 - Running the NotAsync Query.
 
-If yoou want to run a query that is not asynchronous, you can use the runQuery function.
+If you want to run a query that is not asynchronous, you can use the runQuery function.
 
 Example:
 
 ```php
-use GhostlyMC\Database\Database;
+use GhostlyMC\Database\GDatabase;
 
 public function onLoad(): void
 {
-    Database::getMySQL()->runSelectQuery('ghostlymc_servers', null, null,
-    function(array $data) {
+    GDatabase::get_mysql_instance()->runSelectQuery(
+    table: 'ghostlymc_servers', 
+    key: null /** Not Necessary */, 
+    value: null /** Not Necessary */,
+    closure: function(array $data) {
         foreach ($data as $row) {
             $this->server[] = new Server($row['name'], $row['ip'], (int)$row['port']);
             Ghostly::$logger->info(sprintf("%sThe server (%s) has been loaded from the database!", PREFIX, $server->getName()));
         }
-    }, 'DatabaseName?');
+    }, dbName: 'Optional');
 }
 ```
 

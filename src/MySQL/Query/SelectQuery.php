@@ -27,7 +27,7 @@ namespace GhostlyMC\Database\MySQL\Query;
 use mysqli;
 use Closure;
 use mysqli_result;
-use GhostlyMC\Database\Database;
+use GhostlyMC\Database\GDatabase;
 
 class SelectQuery {
     public function __construct(
@@ -38,15 +38,15 @@ class SelectQuery {
         private ?string  $dbName = null
     ) {
         if ($dbName === null)
-            $this->dbName = Database::getMySQL()->getDatabase();
+            $this->dbName = GDatabase::get_mysql_credentials('database');
 
         $this->query(
             new mysqli(
-                Database::getMySQL()->getHost(),
-                Database::getMySQL()->getUser(),
-                Database::getMySQL()->getPassword(),
+                GDatabase::get_mysql_credentials('host'),
+                GDatabase::get_mysql_credentials('user'),
+                GDatabase::get_mysql_credentials('password'),
                 $this->dbName,
-                Database::getMySQL()->getPort()
+                GDatabase::get_mysql_credentials('port')
             )
         );
     }

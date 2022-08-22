@@ -30,34 +30,7 @@ use GhostlyMC\Database\MySQL\Query\AsyncQuery;
 use GhostlyMC\Database\MySQL\Query\SelectQuery;
 
 class MySQL {
-    public function __construct(
-        private string $host,
-        private string $user,
-        private string $password,
-        private string $database,
-        private int    $port = 3306,
-    ) {}
-
-    /**
-     * @return string
-     */
-    public function getHost(): string {
-        return $this->host;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUser(): string {
-        return $this->user;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPassword(): string {
-        return $this->password;
-    }
+    private string $dbName;
 
     /**
      * Do you want to change the database?
@@ -67,21 +40,14 @@ class MySQL {
      * @return void
      */
     public function updateDatabase(string $database): void {
-        $this->database = $database;
+        $this->dbName = $database;
     }
 
     /**
      * @return string
      */
     public function getDatabase(): string {
-        return $this->database;
-    }
-
-    /**
-     * @return int
-     */
-    public function getPort(): int {
-        return $this->port;
+        return $this->dbName;
     }
 
     /**

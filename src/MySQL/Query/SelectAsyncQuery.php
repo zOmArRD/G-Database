@@ -31,6 +31,13 @@ use mysqli_result;
 class SelectAsyncQuery extends AsyncQuery {
     public mixed $rows;
 
+    /**
+     * @param string $table Database table to select from
+     * @param string|null $key Database table key to select from
+     * @param string|null $value Database table value to select from
+     * @param Closure|null $closure Closure to execute on query
+     * @param string|null $dbName Database name to select from
+     */
     public function __construct(
         private string  $table,
         private ?string $key = null,

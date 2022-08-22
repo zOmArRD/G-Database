@@ -26,7 +26,7 @@ namespace GhostlyMC\Database\MySQL\Query;
 
 use mysqli;
 use Closure;
-use GhostlyMC\Database\Database;
+use GhostlyMC\Database\GDatabase;
 use pocketmine\scheduler\AsyncTask;
 use GhostlyMC\Database\Exception\Exception;
 
@@ -39,7 +39,7 @@ abstract class AsyncQuery extends AsyncTask {
         ?string  $dbName = null
     ) {
         $this->closure = $closure;
-        $this->dbName = $dbName === null ? Database::getMySQL()->getDatabase() : $dbName;
+        $this->dbName = $dbName === null ? GDatabase::get_mysql_credentials('database') : $dbName;
     }
 
     /**
@@ -51,11 +51,11 @@ abstract class AsyncQuery extends AsyncTask {
 
     public function onRun(): void {
         $query = new mysqli(
-            Database::getMySQL()->getHost(),
-            Database::getMySQL()->getUser(),
-            Database::getMySQL()->getPassword(),
+            GDatabase::get_mysql_credentials('host'),
+            GDatabase::get_mysql_credentials('user'),
+            GDatabase::get_mysql_credentials('password'),
             $this->dbName,
-            Database::getMySQL()->getPort()
+            GDatabase::get_mysql_credentials('port')
         );
 
         if ($query->connect_error)
