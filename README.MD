@@ -93,7 +93,12 @@ public function onLoad(): void
     closure: function(array $data) {
         foreach ($data as $row) {
             $this->server[] = new Server($row['name'], $row['ip'], (int)$row['port']);
-            Ghostly::$logger->info(sprintf("%sThe server (%s) has been loaded from the database!", PREFIX, $server->getName()));
+            
+            Ghostly::$logger->info(
+                sprintf("%sThe server (%s) has been loaded from the database!", 
+                PREFIX, 
+                $server->getName())
+            );
         }
     }, dbName: 'Optional');
 }
