@@ -47,13 +47,10 @@ class SelectAsyncQuery extends AsyncQuery {
     ) {
         parent::__construct($closure, $dbName);
     }
-
-    /**
-     * @todo Check Unnecessary curly braces.
-     */
+    
     public function query(mysqli $mysqli): void {
-        if (!isset($this->key)) $result = $mysqli->query("SELECT * FROM {$this->table}"); else {
-            $result = $mysqli->query("SELECT * FROM {$this->table} WHERE {$this->key} = {$this->value}");
+        if (!isset($this->key)) $result = $mysqli->query("SELECT * FROM $this->table"); else {
+            $result = $mysqli->query("SELECT * FROM $this->table WHERE $this->key = $this->value");
         }
 
         if ($result instanceof mysqli_result):

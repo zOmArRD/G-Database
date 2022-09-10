@@ -29,7 +29,7 @@ composer require ghostlymc/g-database
 use GhostlyMC\Database\GDatabase;
 
 public function onLoad(): void {
-    $this->mysql = GDatabase::setup_mysql_credentials($host, $user, $password, $database);
+    GDatabase::setup_mysql_credentials($host, $user, $password, $database);
 }
 ```
 
@@ -56,7 +56,7 @@ public function playerLoginEvent(PlayerLoginEvent $event): void {
     
     $MySQL = GDatabase::get_mysql_instance();
     
-    $MySQL->runQueryAsync(new SelectAsyncQuery(
+    $MySQL->runAsyncQuery(new SelectAsyncQuery(
         table: 'ghostly_playerData',
         key: 'playerName',
         value: $player->getName(),
@@ -68,8 +68,8 @@ public function playerLoginEvent(PlayerLoginEvent $event): void {
                     }
                 
                 $finalResult = $data[0];
-                $player->setLanguage($data->language);
-                $player->setScoreboard((bool)$data->scoreboard);
+                $player->setLanguage($finalResult->language);
+                $player->setScoreboard((bool)$finalResult->scoreboard);
         },dbName: 'optional' # It is not necessary if you do not want to do it in another Database.
     ));
 }

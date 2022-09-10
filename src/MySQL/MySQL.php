@@ -55,7 +55,7 @@ class MySQL {
      *
      * @return void
      */
-    public function runQueryAsync(AsyncQuery $query): void {
+    public function runAsyncQuery(AsyncQuery $query): void {
         Server::getInstance()->getAsyncPool()->submitTask($query);
     }
 
