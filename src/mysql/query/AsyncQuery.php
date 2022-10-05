@@ -22,61 +22,56 @@
  */
 declare(strict_types=1);
 
-namespace GhostlyMC\Database\MySQL;
+namespace ghostlymc\database\mysql\query;
 
+use mysqli;
 use Closure;
-use pocketmine\Server;
-use GhostlyMC\Database\MySQL\Query\AsyncQuery;
-use GhostlyMC\Database\MySQL\Query\SelectQuery;
+use ghostlymc\database\GDatabase;
+use pocketmine\scheduler\AsyncTask;
+use ghostlymc\database\exception\Exception;
 
-class MySQL {
-    private string $dbName;
+abstract class AsyncQuery extends AsyncTask {
+    public ?Closure $closure;
+    public string $dbName;
 
-    /**
-     * Do you want to change the database?
-     *
-     * @param string $database
-     *
-     * @return void
-     */
-    public function updateDatabase(string $database): void {
-        $this->dbName = $database;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDatabase(): string {
-        return $this->dbName;
-    }
-
-    /**
-     * @param AsyncQuery $query
-     *
-     * @return void
-     */
-    public function runAsyncQuery(AsyncQuery $query): void {
-        Server::getInstance()->getAsyncPool()->submitTask($query);
-    }
-
-    /**
-     * @see https://github.com/GhostlyMC/G-Database/tree/master
-     *
-     * @param string $table
-     * @param string|null $key
-     * @param string|null $value
-     * @param Closure|null $closure
-     * @param string|null $dbName
-     *
-     * @return void
-     */
-    public function runSelectQuery(
-        string   $table,
-        ?string  $key = null,
-        ?string  $value = null,
+    public function __construct(
         ?Closure $closure = null,
         ?string  $dbName = null
-    ): void {
-        new SelectQuery($table, $key, $value, $closure, $dbName);
+    ) {
+        $this->closure = $closure;
+        $this->dbName = $dbName ?? GDatabase::get_mysql_credentials('database');
     }
+
+    /**
+     * @return Closure|null
+     */
+    public function getClosure(): ?Closure {
+        return $this->closure;
+    }
+
+    public function onRun(): void {
+        $query = new mysqli(
+            GDatabase::get_mysql_credentials('host'),
+            GDatabase::get_mysql_credentials('user'),
+            GDatabase::get_mysql_credentials('password'),
+            $this->dbName,
+            GDatabase::get_mysql_credentials('port')
+        );
+
+        if ($query->connect_error) {
+            throw Exception::mysqlConnectionException("mysql connection failed: $query->connect_error");
+        }
+
+        $this->query($query);
+        $query->close();
+    }
+
+    /**
+     * Make the query to the database.
+     *
+     * @param mysqli $mysqli
+     *
+     * @return void
+     */
+    abstract public function query(mysqli $mysqli): void;
 }

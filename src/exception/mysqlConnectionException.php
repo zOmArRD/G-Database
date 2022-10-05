@@ -22,7 +22,7 @@
  */
 declare(strict_types=1);
 
-namespace GhostlyMC\Database\Exception;
+namespace ghostlymc\database\exception;
 
 use RuntimeException;
 

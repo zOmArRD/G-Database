@@ -22,7 +22,7 @@
  */
 declare(strict_types=1);
 
-namespace GhostlyMC\Database\Exception;
+namespace ghostlymc\database\exception;
 
 final class Exception {
     public static function mysqlConnectionException(string $error): mysqlConnectionException {

@@ -22,51 +22,52 @@
  */
 declare(strict_types=1);
 
-namespace GhostlyMC\Database\MySQL\Query;
+namespace ghostlymc\database\mysql\query;
 
 use mysqli;
 use Closure;
 use mysqli_result;
-use GhostlyMC\Database\GDatabase;
 
-class SelectQuery {
-    public function __construct(
-        private string   $table,
-        private ?string  $key = null,
-        private ?string  $value = null,
-        private ?Closure $closure = null,
-        private ?string  $dbName = null
-    ) {
-        if ($dbName === null)
-            $this->dbName = GDatabase::get_mysql_credentials('database');
-
-        $this->query(
-            new mysqli(
-                GDatabase::get_mysql_credentials('host'),
-                GDatabase::get_mysql_credentials('user'),
-                GDatabase::get_mysql_credentials('password'),
-                $this->dbName,
-                GDatabase::get_mysql_credentials('port')
-            )
-        );
-    }
+class SelectAsyncQuery extends AsyncQuery {
+    public mixed $rows;
 
     /**
-     * @todo Check Unnecessary curly braces.
+     * @param string $table Database table to select from
+     * @param string|null $key Database table key to select from
+     * @param string|null $value Database table value to select from
+     * @param Closure|null $closure Closure to execute on query
+     * @param string|null $dbName Database name to select from
      */
-    public function query(mysqli $mysqli): void {
-        if (!isset($this->key)) $result = $mysqli->query("SELECT * FROM {$this->table}"); else {
-            $result = $mysqli->query("SELECT * FROM {$this->table} WHERE {$this->key} = {$this->value}");
-        }
+    public function __construct(
+        private string  $table,
+        private ?string $key = null,
+        private ?string $value = null,
+        ?Closure        $closure = null,
+        ?string         $dbName = null
+    ) {
+        parent::__construct($closure, $dbName);
+    }
 
-        if (!$result instanceof mysqli_result):
-            $this->closure->__invoke();
-        else:
+    public function query(mysqli $mysqli): void {
+        $result = !isset($this->key) ? $mysqli->query("SELECT * FROM $this->table") : $mysqli->query("SELECT * FROM $this->table WHERE $this->key = $this->value");
+
+        if ($result instanceof mysqli_result):
             $rows = [];
 
-            while ($row = $result->fetch_assoc()) $rows[] = $row;
+            while ($row = $result->fetch_assoc()) {
+                $rows[] = $row;
+            }
 
-            $this->closure->__invoke($rows);
+            $this->rows = serialize($rows);
         endif;
+    }
+
+    /** @noinspection UnserializeExploitsInspection */
+    public function onCompletion(): void {
+        if ($this->rows !== null) {
+            $this->closure->__invoke(unserialize($this->rows));
+        } else {
+            $this->closure->__invoke();
+        }
     }
 }

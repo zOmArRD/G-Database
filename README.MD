@@ -47,9 +47,7 @@ Link to SelectAsyncQuery
 class: [SelectAsyncQuery](https://github.com/GhostlyMC/G-Database/blob/master/src/MySQL/Query/SelectAsyncQuery.php)
 
 ```php
-use pocketmine\event\player\PlayerLoginEvent;
-use GhostlyMC\Database\GDatabase;
-use GhostlyMC\Database\MySQL\Query\SelectAsyncQuery;
+use GhostlyMC\Database\GDatabase;use pocketmine\event\player\PlayerLoginEvent;use ghostlymc\database\mysql\query\SelectAsyncQuery;
 
 public function playerLoginEvent(PlayerLoginEvent $event): void {
     $player = $event->getPlayer();
