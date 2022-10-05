@@ -22,16 +22,16 @@
  */
 declare(strict_types=1);
 
-namespace GhostlyMC\Database;
+namespace ghostlymc\database;
 
 use InvalidArgumentException;
 use JetBrains\PhpStorm\ArrayShape;
-use GhostlyMC\Database\MySQL\MySQL;
+use ghostlyMC\database\mysql\MySQL;
 use JetBrains\PhpStorm\ExpectedValues;
 
 class GDatabase {
 
-    private static MySQL $mysqlInstance;
+    private static ?MySQL $mysqlInstance = null;
 
     #[ArrayShape([
         'host' => 'string',
@@ -81,7 +81,9 @@ class GDatabase {
     }
 
     public static function get_mysql_instance(): MySQL {
-        if (self::$mysqlInstance === null) self::$mysqlInstance = new MySQL();
+        if (self::$mysqlInstance === null) {
+            self::$mysqlInstance = new MySQL();
+        }
 
         return self::$mysqlInstance;
     }
