@@ -26,7 +26,7 @@ namespace ghostlymc\database;
 
 use InvalidArgumentException;
 use JetBrains\PhpStorm\ArrayShape;
-use ghostlyMC\database\mysql\MySQL;
+use ghostlymc\database\mysql\MySQL;
 use JetBrains\PhpStorm\ExpectedValues;
 
 class GDatabase {
